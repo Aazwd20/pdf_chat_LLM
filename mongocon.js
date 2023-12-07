@@ -1,19 +1,24 @@
 const { MongoClient } = require("mongodb");
 
-const uri = "mongodb://localhost:27017"; // Update with your MongoDB connection string
+const uri = "mongodb://localhost:27017";
 const client = new MongoClient(uri, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
+let db;
 
-async function connectToMongoDB() {
+async function connectToMongo() {
   try {
     await client.connect();
+    db = client.db("appdb");
     console.log("Connected to MongoDB");
-    return client.db("chatDatabase"); // Use or create a database named "chatDatabase"
   } catch (error) {
     console.error("Error connecting to MongoDB:", error);
   }
 }
 
-module.exports = connectToMongoDB;
+function getDb() {
+  return db;
+}
+
+module.exports = { connectToMongo, getDb };
