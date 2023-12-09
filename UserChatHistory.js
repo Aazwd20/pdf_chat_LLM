@@ -29,30 +29,52 @@ async function connectToMongoDB() {
 connectToMongoDB();
 
 // Endpoint to fetch all user chats
-app.get("/userchats/:user_id", async (req, res) => {
-  const { user_id } = req.params;
-  try {
-    const db = client.db("appdb_online");
-    const collection = db.collection("aiqus");
-    const userChats = await collection.find({ user_id }).toArray();
-    res.json({ success: true, chats: userChats });
-  } catch (error) {
-    console.error("Error fetching user chats:", error);
-    res.status(500).json({ success: false, message: "Internal server error" });
-  }
-});
+// app.get("/userchats/:user_id", async (req, res) => {
+//   const { user_id } = req.params;
+//   try {
+//     const db = client.db("appdb_online");
+//     const collection = db.collection("aiqus_new");
+//     const userChats = await collection.find({ user_id }).toArray();
+//     res.json({ success: true, chats: userChats });
+//   } catch (error) {
+//     console.error("Error fetching user chats:", error);
+//     res.status(500).json({ success: false, message: "Internal server error" });
+//   }
+// });
 
-// Endpoint to fetch messages for a specific chat
-app.get("/userchats/:user_id/:chat_name/messages", async (req, res) => {
+// // Endpoint to fetch messages for a specific chat
+// app.get("/userchats/:user_id/:chat_name/messages", async (req, res) => {
+//   const { user_id, chat_name } = req.params;
+//   try {
+//     const db = client.db("appdb_online");
+//     const collection = db.collection("aiqus_new");
+//     const chatMessages = await collection.findOne({ user_id, chat_name });
+//     res.json({ success: true, messages: chatMessages.conversation || [] });
+//   } catch (error) {
+//     console.error("Error fetching chat messages:", error);
+//     res.status(500).json({ success: false, message: "Internal server error" });
+//   }
+// });
+
+app.get("/chats/:user_id/:chat_name", async (req, res) => {
   const { user_id, chat_name } = req.params;
+
   try {
     const db = client.db("appdb_online");
-    const collection = db.collection("aiqus");
-    const chatMessages = await collection.findOne({ user_id, chat_name });
-    res.json({ success: true, messages: chatMessages.conversation || [] });
+    const collection = db.collection("aiqus_new");
+
+    const chat = await collection.findOne({ user_id, chat_name });
+
+    res.json({
+      success: true,
+      chat,
+    });
   } catch (error) {
-    console.error("Error fetching chat messages:", error);
-    res.status(500).json({ success: false, message: "Internal server error" });
+    console.error("Error fetching chat:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
   }
 });
 
